@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Curated tour packages (seeded from data/tours.json).
+model Tour {
+  id           String   @id
+  title        String
+  destination  String
+  country      String
+  category     String
+  durationDays Int
+  priceFrom    Int
+  rating       Float
+  reviews      Int
+  lat          Float
+  lng          Float
+  image        String
+  summary      String
+  highlights   String // JSON-encoded string[]
+  itinerary    String // JSON-encoded string[]
+  includes     String // JSON-encoded string[]
+  bookings     Booking[]
+}
+
+// Registered users.
+model User {
+  id            String       @id @default(cuid())
+  email         String       @unique
+  name          String
+  passwordHash  String
+  emailVerified Boolean      @default(true)
+  tokenVersion  Int          @default(0)
+  createdAt     DateTime     @default(now())
+  bookings      Booking[]
+  travelers     Traveler[]
+  alerts        PriceAlert[]
+}
+
+// One-time codes for email verification and password reset.
+model OtpCode {
+  id        String   @id @default(cuid())
+  email     String
+  codeHash  String
+  purpose   String // verify | reset
+  expiresAt DateTime
+  attempts  Int      @default(0)
+  consumed  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([email, purpose])
+}
+
+// "Lowest fare" subscription for a route — notify when cheapest <= target.
+model PriceAlert {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  mode        String // flight | train | bus
+  fromCode    String
+  toCode      String
+  fromCity    String?
+  toCity      String?
+  cabin       String?
+  targetPrice Int
+  currency    String   @default("USD")
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+// Saved traveler profiles for fast passenger autofill at checkout.
+model Traveler {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  name      String
+  age       Int
+  gender    String // M | F | O
+  createdAt DateTime @default(now())
+}
+
+// Persisted bookings across every mode (flight/train/bus/tour).
+model Booking {
+  id         String   @id @default(cuid())
+  reference  String   @unique
+  mode       String // flight | train | bus | tour
+  fromCode   String?
+  toCode     String?
+  fromCity   String?
+  toCity     String?
+  date       String?
+  depTime    String?
+  arrTime    String?
+  offerId    String?
+  tourId     String?
+  tour       Tour?    @relation(fields: [tourId], references: [id])
+  trainNo    String?
+  trainName  String?
+  operator   String?
+  adults     Int      @default(1)
+  children   Int      @default(0)
+  infants    Int      @default(0)
+  cabin      String?
+  passengers String? // JSON: [{ name, age, gender, seat }]
+  seats      String? // JSON: string[]
+  unitPrice  Int
+  totalPrice Int
+  discount   Int      @default(0)
+  couponCode String?
+  currency   String   @default("USD")
+  contactName  String
+  contactEmail String
+  status     String   @default("confirmed")
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+}

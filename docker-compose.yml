@@ -1,0 +1,48 @@
+# One-command local production stack (Postgres + backend + frontend).
+#   docker compose up --build
+# Then open http://localhost:3000
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: skyroute
+      POSTGRES_PASSWORD: skyroute
+      POSTGRES_DB: skyroute
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U skyroute"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://skyroute:skyroute@db:5432/skyroute
+      PORT: "4000"
+      CORS_ORIGIN: http://localhost:3000
+      JWT_SECRET: change-me-in-prod
+      OTP_SECRET: change-me-in-prod
+      ADMIN_EMAILS: demo@skyroute.test
+      MAIL_FROM: SkyRoute Travels <no-reply@skyroute.test>
+    ports:
+      - "4000:4000"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:4000
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:

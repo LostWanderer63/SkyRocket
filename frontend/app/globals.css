@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --c-bg: 245 247 251;
+    --c-surface: 255 255 255;
+    --c-ink: 15 27 45;
+    --c-ink-soft: 90 107 130;
+    --c-line: 228 233 242;
+    --c-brand-tint: 233 241 255;
+  }
+  .dark {
+    --c-bg: 13 19 32;
+    --c-surface: 22 30 46;
+    --c-ink: 226 232 240;
+    --c-ink-soft: 148 163 184;
+    --c-line: 39 51 71;
+    --c-brand-tint: 30 45 74;
+    color-scheme: dark;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-bg text-ink antialiased;
+  }
+}
+
+@layer components {
+  /* shared input style used across the search card — fixed height keeps every
+     control (text inputs, the date trigger button, selects) perfectly aligned */
+  .input {
+    @apply h-11 w-full rounded-[10px] border border-line bg-surface px-3 text-ink focus:border-brand focus:outline focus:outline-2 focus:outline-brand-tint;
+  }
+  textarea.input { @apply h-auto py-2.5; }
+}
+
+/* Print: show only the e-ticket. */
+@media print {
+  body * { visibility: hidden; }
+  .print-area, .print-area * { visibility: visible; }
+  .print-area { position: absolute; inset: 0; box-shadow: none; }
+}

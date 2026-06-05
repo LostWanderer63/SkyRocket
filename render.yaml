@@ -1,0 +1,49 @@
+# Render blueprint — deploys the backend + a managed Postgres.
+# Deploy the FRONTEND on Vercel (root = frontend/, env NEXT_PUBLIC_API_URL=<backend url>).
+#
+# In Render: New > Blueprint > pick this repo. After it's up, set CORS_ORIGIN
+# and ADMIN_EMAILS in the backend service's Environment, then redeploy.
+
+databases:
+  - name: skyroute-db
+    plan: free
+
+services:
+  - type: web
+    name: skyroute-backend
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install && npm run build:prod
+    preDeployCommand: npm run predeploy   # creates tables + seeds tours
+    startCommand: npm run start
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: skyroute-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: OTP_SECRET
+        generateValue: true
+      - key: NODE_VERSION
+        value: "20"
+      # Set these after the first deploy (your real values):
+      - key: CORS_ORIGIN
+        sync: false   # e.g. https://your-app.vercel.app
+      - key: ADMIN_EMAILS
+        sync: false   # e.g. you@email.com
+      - key: MAIL_FROM
+        sync: false
+      # Optional — real email + payments:
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false

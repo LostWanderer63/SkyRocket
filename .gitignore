@@ -1,0 +1,25 @@
+# deps / build
+node_modules/
+**/node_modules/
+.next/
+**/.next/
+dist/
+**/dist/
+
+# env & secrets
+.env
+**/.env
+*.local
+
+# sqlite (dev only)
+*.db
+*.db-journal
+**/prisma/dev.db*
+
+# raw source datasets (huge; only used to regenerate the committed JSON)
+backend/src/data/raw/
+
+# misc
+.DS_Store
+*.log
+tsconfig.tsbuildinfo
