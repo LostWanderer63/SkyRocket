@@ -177,14 +177,16 @@ export function CheckoutWizard({ legs, pax, onClose }: Props) {
                       </select>
                     )}
                   </div>
-                  <div className="grid grid-cols-[1fr_80px_90px] gap-2">
+                  <div className="grid gap-2">
                     <input value={p.name} onChange={(e) => setPax(i, { name: e.target.value })} placeholder="Full name" className="input" />
-                    <input type="number" min={0} max={120} value={p.age} onChange={(e) => setPax(i, { age: Number(e.target.value) })} placeholder="Age" className="input" />
-                    <select value={p.gender} onChange={(e) => setPax(i, { gender: e.target.value as Passenger["gender"] })} className="input">
-                      <option value="M">Male</option>
-                      <option value="F">Female</option>
-                      <option value="O">Other</option>
-                    </select>
+                    <div className="grid grid-cols-2 gap-2">
+                      <input type="number" min={0} max={120} value={p.age} onChange={(e) => setPax(i, { age: Number(e.target.value) })} placeholder="Age" className="input" />
+                      <select value={p.gender} onChange={(e) => setPax(i, { gender: e.target.value as Passenger["gender"] })} className="input">
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                        <option value="O">Other</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
               ))}

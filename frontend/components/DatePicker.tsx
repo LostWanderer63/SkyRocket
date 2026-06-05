@@ -75,7 +75,7 @@ export function DatePicker({ value, onChange, min, max, disabled, placeholder = 
       </button>
 
       {open && (
-        <div className="absolute left-0 top-[calc(100%+0.4rem)] z-40 w-[280px] rounded-xl2 border border-line bg-surface p-3 shadow-card">
+        <div className="absolute left-0 top-[calc(100%+0.4rem)] z-40 w-[280px] max-w-[calc(100vw-2rem)] rounded-xl2 border border-line bg-surface p-3 shadow-card">
           <div className="mb-2 flex items-center justify-between">
             <button type="button" onClick={() => shift(-1)} className="grid h-8 w-8 place-items-center rounded-lg hover:bg-bg" aria-label="Previous month">‹</button>
             <span className="text-sm font-bold">{MONTHS[view.m]} {view.y}</span>

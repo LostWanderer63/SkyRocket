@@ -19,7 +19,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-surface/85 backdrop-blur-md backdrop-saturate-150">
-      <div className="mx-auto flex h-[70px] w-[92vw] max-w-[1180px] items-center gap-6">
+      <div className="mx-auto flex h-[64px] w-[92vw] max-w-[1180px] items-center gap-3 md:h-[70px] md:gap-6">
         <Brand />
 
         <nav className="ml-2 hidden items-center gap-6 md:flex">
@@ -65,17 +65,20 @@ export function Header() {
               Sign in
             </button>
           )}
-          <Link href="/flights" className="rounded-[10px] bg-brand px-4 py-2 font-semibold text-white transition-colors hover:bg-brand-dark">
+          <Link href="/flights" className="hidden rounded-[10px] bg-brand px-4 py-2 font-semibold text-white transition-colors hover:bg-brand-dark sm:inline-block">
             Book now
           </Link>
           <button
             aria-label="Menu"
+            aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            className="flex flex-col gap-[5px] p-1.5 md:hidden"
+            className="grid h-9 w-9 place-items-center rounded-[10px] border border-line md:hidden"
           >
-            <span className="h-0.5 w-6 rounded bg-ink" />
-            <span className="h-0.5 w-6 rounded bg-ink" />
-            <span className="h-0.5 w-6 rounded bg-ink" />
+            <span className="relative flex flex-col gap-[5px]">
+              <span className="h-0.5 w-5 rounded bg-ink" />
+              <span className="h-0.5 w-5 rounded bg-ink" />
+              <span className="h-0.5 w-5 rounded bg-ink" />
+            </span>
           </button>
         </div>
       </div>
@@ -83,27 +86,40 @@ export function Header() {
       {authOpen && <AuthModal onClose={() => setAuthOpen(false)} />}
 
       {open && (
-        <nav className="flex flex-col border-b border-line bg-surface px-[6vw] pb-4 md:hidden">
+        <nav className="flex flex-col gap-1 border-b border-line bg-surface px-[4vw] pb-4 pt-1 md:hidden">
           {NAV.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
-              className={`border-b border-line py-3 font-semibold ${
-                isActive(item.href) ? "text-brand" : "text-ink-soft"
+              className={`flex items-center justify-between rounded-[10px] px-3 py-3 font-semibold ${
+                isActive(item.href) ? "bg-brand-tint text-brand" : "text-ink hover:bg-bg"
               }`}
             >
               {item.label}
+              <span className="text-ink-soft">›</span>
             </Link>
           ))}
+
+          <div className="my-2 border-t border-line" />
+
           {signedIn ? (
             <>
-              <Link href="/account" onClick={() => setOpen(false)} className="border-b border-line py-3 font-semibold text-ink-soft">My bookings</Link>
-              <button onClick={() => { logout(); setOpen(false); }} className="py-3 text-left font-semibold text-red-600">Log out</button>
+              <div className="flex items-center gap-2 px-3 py-2">
+                <span className="grid h-8 w-8 place-items-center rounded-full bg-brand text-sm text-white">{user?.name.charAt(0).toUpperCase()}</span>
+                <span className="truncate text-sm font-semibold">{user?.name}</span>
+              </div>
+              <Link href="/account" onClick={() => setOpen(false)} className="rounded-[10px] px-3 py-3 font-semibold text-ink hover:bg-bg">My bookings</Link>
+              {user?.isAdmin && <Link href="/admin" onClick={() => setOpen(false)} className="rounded-[10px] px-3 py-3 font-semibold text-brand hover:bg-bg">⚙️ Admin dashboard</Link>}
+              <button onClick={() => { logout(); setOpen(false); }} className="rounded-[10px] px-3 py-3 text-left font-semibold text-red-600 hover:bg-bg">Log out</button>
             </>
           ) : (
-            <button onClick={() => { setAuthOpen(true); setOpen(false); }} className="py-3 text-left font-semibold text-brand">Sign in</button>
+            <button onClick={() => { setAuthOpen(true); setOpen(false); }} className="rounded-[10px] border border-line px-3 py-3 text-center font-semibold text-ink hover:bg-bg">Sign in</button>
           )}
+
+          <Link href="/flights" onClick={() => setOpen(false)} className="mt-1 rounded-[10px] bg-brand px-3 py-3 text-center font-semibold text-white hover:bg-brand-dark">
+            Book now
+          </Link>
         </nav>
       )}
     </header>
@@ -116,8 +132,8 @@ export function Brand({ light = false }: { light?: boolean }) {
       <span className="grid h-[38px] w-[38px] place-items-center rounded-[10px] bg-gradient-to-br from-brand to-[#4f9bff] font-extrabold tracking-wide text-white">
         SR
       </span>
-      <span className={`text-[1.1rem] ${light ? "text-white" : ""}`}>
-        SkyRoute <em className="not-italic text-brand">Travels</em>
+      <span className={`whitespace-nowrap text-[1.05rem] sm:text-[1.1rem] ${light ? "text-white" : ""}`}>
+        SkyRoute<em className="not-italic text-brand"><span className="hidden sm:inline"> Travels</span></em>
       </span>
     </Link>
   );

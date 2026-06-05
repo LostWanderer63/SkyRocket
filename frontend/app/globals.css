@@ -32,7 +32,7 @@
   /* shared input style used across the search card — fixed height keeps every
      control (text inputs, the date trigger button, selects) perfectly aligned */
   .input {
-    @apply h-11 w-full rounded-[10px] border border-line bg-surface px-3 text-ink focus:border-brand focus:outline focus:outline-2 focus:outline-brand-tint;
+    @apply h-11 w-full min-w-0 rounded-[10px] border border-line bg-surface px-3 text-ink focus:border-brand focus:outline focus:outline-2 focus:outline-brand-tint;
   }
   textarea.input { @apply h-auto py-2.5; }
 }

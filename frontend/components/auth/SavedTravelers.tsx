@@ -62,13 +62,15 @@ export function SavedTravelers() {
       </div>
 
       {open && (
-        <form onSubmit={add} className="mb-4 grid grid-cols-[1fr_80px_90px_auto] gap-2">
+        <form onSubmit={add} className="mb-4 grid gap-2 sm:grid-cols-[1fr_80px_100px_auto]">
           <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" className="input" />
-          <input type="number" min={0} max={120} value={age} onChange={(e) => setAge(Number(e.target.value))} className="input" />
-          <select value={gender} onChange={(e) => setGender(e.target.value as "M" | "F" | "O")} className="input">
-            <option value="M">Male</option><option value="F">Female</option><option value="O">Other</option>
-          </select>
-          <button disabled={busy} className="rounded-[10px] bg-brand px-4 font-semibold text-white hover:bg-brand-dark disabled:opacity-60">Save</button>
+          <div className="grid grid-cols-2 gap-2 sm:contents">
+            <input type="number" min={0} max={120} value={age} onChange={(e) => setAge(Number(e.target.value))} placeholder="Age" className="input" />
+            <select value={gender} onChange={(e) => setGender(e.target.value as "M" | "F" | "O")} className="input">
+              <option value="M">Male</option><option value="F">Female</option><option value="O">Other</option>
+            </select>
+          </div>
+          <button disabled={busy} className="h-11 rounded-[10px] bg-brand px-4 font-semibold text-white hover:bg-brand-dark disabled:opacity-60">Save</button>
         </form>
       )}
 
@@ -78,21 +80,24 @@ export function SavedTravelers() {
         <div className="flex flex-col gap-2">
           {travelers.map((t) =>
             editId === t.id ? (
-              <div key={t.id} className="grid grid-cols-[1fr_70px_84px_auto_auto] gap-2 rounded-xl2 border border-brand bg-brand-tint/40 p-2">
-                <input value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} className="input" />
-                <input type="number" min={0} max={120} value={draft.age} onChange={(e) => setDraft({ ...draft, age: Number(e.target.value) })} className="input" />
-                <select value={draft.gender} onChange={(e) => setDraft({ ...draft, gender: e.target.value as "M" | "F" | "O" })} className="input">
-                  <option value="M">Male</option><option value="F">Female</option><option value="O">Other</option>
-                </select>
-                <button onClick={saveEdit} className="rounded-[8px] bg-brand px-3 text-sm font-semibold text-white">Save</button>
-                <button onClick={() => setEditId(null)} className="rounded-[8px] border border-line px-3 text-sm font-semibold">Cancel</button>
+              <div key={t.id} className="grid gap-2 rounded-xl2 border border-brand bg-brand-tint/40 p-2">
+                <input value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} placeholder="Full name" className="input" />
+                <div className="grid grid-cols-2 gap-2">
+                  <input type="number" min={0} max={120} value={draft.age} onChange={(e) => setDraft({ ...draft, age: Number(e.target.value) })} placeholder="Age" className="input" />
+                  <select value={draft.gender} onChange={(e) => setDraft({ ...draft, gender: e.target.value as "M" | "F" | "O" })} className="input">
+                    <option value="M">Male</option><option value="F">Female</option><option value="O">Other</option>
+                  </select>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <button onClick={saveEdit} className="h-10 rounded-[8px] bg-brand text-sm font-semibold text-white">Save</button>
+                  <button onClick={() => setEditId(null)} className="h-10 rounded-[8px] border border-line text-sm font-semibold">Cancel</button>
+                </div>
               </div>
             ) : (
               <div key={t.id} className="flex items-center gap-3 rounded-xl2 border border-line bg-bg px-3 py-2 text-sm">
-                <span className="grid h-7 w-7 place-items-center rounded-full bg-brand text-xs font-bold text-white">{t.name.charAt(0).toUpperCase()}</span>
-                <span className="font-semibold">{t.name}</span>
-                <span className="text-ink-soft">{t.age} · {t.gender === "M" ? "Male" : t.gender === "F" ? "Female" : "Other"}</span>
-                <div className="ml-auto flex items-center gap-1">
+                <span className="grid h-7 w-7 flex-shrink-0 place-items-center rounded-full bg-brand text-xs font-bold text-white">{t.name.charAt(0).toUpperCase()}</span>
+                <span className="min-w-0 flex-1 truncate font-semibold">{t.name} <span className="font-normal text-ink-soft">· {t.age}{t.gender}</span></span>
+                <div className="ml-auto flex flex-shrink-0 items-center gap-1">
                   <button onClick={() => startEdit(t)} className="rounded-[8px] px-2 py-1 text-xs font-semibold text-brand hover:bg-brand-tint">Edit</button>
                   <button onClick={() => remove(t.id)} className="rounded-[8px] px-2 py-1 text-xs font-semibold text-red-600 hover:bg-[#fdecec]">Remove</button>
                 </div>
