@@ -15,8 +15,8 @@ services:
     plan: free
     rootDir: backend
     buildCommand: npm install && npm run build:prod
-    preDeployCommand: npm run predeploy   # creates tables + seeds tours
-    startCommand: npm run start
+    # Free tier has no pre-deploy hook, so sync schema + seed on start (idempotent).
+    startCommand: npm run predeploy && npm run start
     healthCheckPath: /api/health
     envVars:
       - key: DATABASE_URL
